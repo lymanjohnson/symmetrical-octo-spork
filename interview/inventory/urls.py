@@ -8,6 +8,7 @@ from interview.inventory.views import (
     InventoryTagRetrieveUpdateDestroyView,
     InventoryTypeListCreateView,
     InventoryTypeRetrieveUpdateDestroyView,
+    InventoryListByCreationDateView,
 )
 from interview.order.views import OrderListCreateView, OrderTagListCreateView
 
@@ -37,6 +38,11 @@ urlpatterns = [
         "languages/",
         InventoryLanguageListCreateView.as_view(),
         name="inventory-languages-list",
+    ),
+    path(
+        "dates/",
+        InventoryListByCreationDateView.as_view(),
+        name="inventory-list-after-date",
     ),
     path("tags/", InventoryTagListCreateView.as_view(), name="inventory-tags-list"),
     path("types/", InventoryTypeListCreateView.as_view(), name="inventory-types-list"),

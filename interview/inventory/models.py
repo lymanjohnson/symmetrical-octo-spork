@@ -12,6 +12,9 @@ class InventoryTag(UniqueNameModel, TimestampedModel, IsActiveModel, models.Mode
     def __str__(self) -> str:
         return self.name
 
+    class Meta:
+        app_label = "inventory"
+
 
 class InventoryLanguage(UniqueNameModel, TimestampedModel, models.Model):
     class Meta:
@@ -20,6 +23,9 @@ class InventoryLanguage(UniqueNameModel, TimestampedModel, models.Model):
     def __str__(self) -> str:
         return self.name
 
+    class Meta:
+        app_label = "inventory"
+
 
 class InventoryType(UniqueNameModel, TimestampedModel, models.Model):
     class Meta:
@@ -27,6 +33,9 @@ class InventoryType(UniqueNameModel, TimestampedModel, models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    class Meta:
+        app_label = "inventory"
 
 
 class Inventory(NameModel, TimestampedModel, models.Model):
@@ -41,6 +50,7 @@ class Inventory(NameModel, TimestampedModel, models.Model):
 
     class Meta:
         verbose_name_plural = "Inventories"
+        app_label = "inventory"
 
     def __str__(self) -> str:
         return self.name
