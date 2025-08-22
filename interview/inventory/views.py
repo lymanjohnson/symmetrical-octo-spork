@@ -1,6 +1,8 @@
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
+from rest_framework.exceptions import ValidationError
+import datetime
 
 from interview.inventory.models import (
     Inventory,
@@ -43,6 +45,36 @@ class InventoryListCreateView(APIView):
 
     def get_queryset(self):
         return self.queryset.all()
+
+class InventoryListByCreationDateView(APIView):
+    queryset = Inventory.objects.all()
+    serializer_class = InventorySerializer
+
+    def get(self, request, *args, **kwargs):
+        after_date_str = request.GET.get("after")
+        before_date_str = request.GET.get("before")
+
+        if not (after_date_str or before_date_str):
+            raise ValidationError({"detail": "You must provide 'after' or 'before' query parameters."})
+
+        queryset = self.queryset
+
+        if after_date_str:
+            try:
+                after_date = datetime.datetime.strptime(after_date_str, "%Y-%m-%d").date()
+                queryset = queryset.filter(created_at__date__gte=after_date)
+            except ValueError:
+                raise ValidationError({"after": "Invalid date format. Use YYYY-MM-DD."})
+
+        if before_date_str:
+            try:
+                before_date = datetime.datetime.strptime(before_date_str, "%Y-%m-%d").date()
+                queryset = queryset.filter(created_at__date__lte=before_date)
+            except ValueError:
+                raise ValidationError({"before": "Invalid date format. Use YYYY-MM-DD."})
+
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
 
 
 class InventoryRetrieveUpdateDestroyView(APIView):
